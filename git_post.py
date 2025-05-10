@@ -1,15 +1,17 @@
+import os
+from dotenv import load_dotenv, dotenv_values 
 import httpx
 import json
 
 from time import sleep
 
-url   = "https://website.de/api/v1/auth/sessions"
-c_url = "https://website.de/api/v1/courses"
-p_url = "https://website.de/api/v1/courses/1/tasks/19/submission"
-r_url = "https://website.de/api/v1/courses/1/tasks/19/result"
+load_dotenv()
 
+login_url   = os.getenv("base_url") + os.getenv("login_path")
+submission_url = os.getenv("base_url") + os.getenv("task_path") + os.getenv("task_nr") + os.getenv("submission_path")
+result_url =  os.getenv("base_url") + os.getenv("task_path") + os.getenv("task_nr") + os.getenv("result_path")
 
-file_loc = "" #Set Path to file
+file_loc = os.getenv("file_path")
 
 #login headers
 headers = {
@@ -66,14 +68,14 @@ files = {
 
 with httpx.Client(follow_redirects=True) as session:
 # login post
-r = session.post(url, headers=headers, json=data)
+r = session.post(login_url, headers=headers, json=data)
 
   if r.status_code == 200:
     print("Login Succesful")
 
 # file upload
     #course = session.get(c_url)
-    upload = session.post(p_url, headers=post_head, files=files)
+    upload = session.post(submission_url, headers=post_head, files=files)
 
     if upload.status_code == 200:
       print("uploaded Succesfull")
@@ -82,7 +84,7 @@ r = session.post(url, headers=headers, json=data)
       counter = 0
 # check if tests finished and if so print result
       while not collected_results:
-        result = session.get(r_url)
+        result = session.get(result_url)
         data = json.loads(result.text)
 
         result_state = data['public_execution_state']
