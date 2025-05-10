@@ -1,9 +1,9 @@
 import os
-from dotenv import load_dotenv, dotenv_values 
 import httpx
 import json
 
 from time import sleep
+from dotenv import load_dotenv, dotenv_values 
 
 load_dotenv()
 
