@@ -54,8 +54,8 @@ post_head = {
 }
 
 data =  {
-    "email": "a@b.c", #Login Email
-    "plain_password": "" #Password
+    "email": os.getenv("email_address"), #Login Email
+    "plain_password": os.getenv("password") #Password
 }
 
 files = {
