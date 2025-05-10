@@ -11,6 +11,7 @@ r_url = "https://website.de/api/v1/courses/1/tasks/19/result"
 
 file_loc = "" #Set Path to file
 
+#login headers
 headers = {
     "Accept-Encoding": "gzip, deflate, br, zstd",
     "Accept-Language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
@@ -29,13 +30,14 @@ headers = {
     "sec-ch-ua-platform": "\"Windows\"",
 }
 
+#post file headers
 post_head = {
     "Accept": "*/*",
     "Accept-Encoding": "gzip, deflate, br, zstd",
     "Accept-Language": "de-DE,de;q=0.9,en-US;q=0.8,en;q=0.7",
     "Connection": "keep-alive",
     "Content-Length": "1582",
-  #Sollte automatisch erzeugt werden /\ und \/
+  #should hopefully be generated automatically /\ and \/
     "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundarypD4n0jzkQnrBPPN8",
     "Host": "website.de",
     "Origin": "https://website.de/",
@@ -62,35 +64,31 @@ files = {
   )
 }
 
-def get_value(data, key):
-  for k, v in data.items():
-    if k == key:
-      return v
-  print("Error, couldn't find key")
-
-
 with httpx.Client(follow_redirects=True) as session:
-  r = session.post(url, headers=headers, json=data)
+# login post
+r = session.post(url, headers=headers, json=data)
 
   if r.status_code == 200:
     print("Login Succesful")
 
+# file upload
     #course = session.get(c_url)
     upload = session.post(p_url, headers=post_head, files=files)
 
     if upload.status_code == 200:
       print("uploaded Succesfull")
-      
+
       collected_results = False
       counter = 0
+# check if tests finished and if so print result
       while not collected_results:
         result = session.get(r_url)
         data = json.loads(result.text)
 
-        result_state = get_value(data, "public_execution_state")
+        result_state = data("public_execution_state")
 
         if result_state == 2:
-          results = get_value(data, "public_test_log")
+          results = data("public_test_log")
           collected_results = True
           print(results)
         else:
