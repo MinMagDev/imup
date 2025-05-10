@@ -85,10 +85,10 @@ r = session.post(url, headers=headers, json=data)
         result = session.get(r_url)
         data = json.loads(result.text)
 
-        result_state = data("public_execution_state")
+        result_state = data['public_execution_state']
 
         if result_state == 2:
-          results = data("public_test_log")
+          results = data['public_test_log']
           collected_results = True
           print(results)
         else:
