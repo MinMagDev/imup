@@ -1,2 +1,0 @@
-import imupcli
-imupcli.main()
