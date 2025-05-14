@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import os
 import httpx
 import json
@@ -13,6 +15,7 @@ def main():
   parser.add_argument("task_number", type=str, help="the number of the task to upload")
   args = parser.parse_args()
   
+  print("Upload to:" + args.file_path)
   upload_file(args.file_path, args.file_name, args.task_number)
 
 def upload_file(file_loc, file_name, number):
